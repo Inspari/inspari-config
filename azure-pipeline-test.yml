@@ -1,0 +1,49 @@
+trigger:
+  branches:
+    include:
+      - master
+      - dev
+  paths:
+    include:
+      - inspari/config/**
+      - test/** 
+      - azure-pipelines-test.yml
+
+# variables:
+#   - name: System.DisableAutomaticSecretsDetection
+#     value: true
+#   - group: genai # Variable group containing GIT_TOKEN secret
+#   - name: tag
+#     value: "$(Build.BuildId)" # Keep your existing tag variable
+
+jobs:
+- job: 'Test'
+  pool:
+    vmImage: 'Ubuntu-24.04'
+  strategy:
+    matrix:
+      Python313:
+        python.version: '3.13'
+    maxParallel: 2
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+  - script: |
+      pipx install poetry
+      poetry install --no-root
+    displayName: 'Install dependencies'
+  - script: |
+      pip install pytest-azurepipelines
+      poetry run coverage run -m pytest --junitxml=results.xml
+      poetry run coverage xml -o coverage.xml
+    displayName: 'Run Unit Tests with pytest'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/results.xml'
+      testRunTitle: 'Python $(python.version)'
+      condition: succeededOrFailed()
+  - task: PublishCodeCoverageResults@2
+    inputs:
+      summaryFileLocation: '**/coverage.xml'
