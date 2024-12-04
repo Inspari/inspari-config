@@ -2,7 +2,7 @@ This repository provides Python configuration utilities.
 
 ### Usage
 
-The most common usage patternis to create a `config.py` file that defines the application configuration. The configuration itself is parsed from environment variables. They are typically read from a `.env` file during local development, injected at runtime in pipelines, and passed via application settings in production.
+The most common usage pattern is to create a `config.py` file that _defines_ the configuration. The configuration itself is parsed from environment variables. They are typically read from a `.env` file during local development.
 
 A minimal example is bundled, with the configuration defined in `example_config.py`, a few variables in `example.env`, and the typical access pattern (i.e. how settings are access in application code) illustrated in `example_usage.py`.
 
