@@ -9,13 +9,6 @@ trigger:
       - test/** 
       - azure-pipelines-test.yml
 
-# variables:
-#   - name: System.DisableAutomaticSecretsDetection
-#     value: true
-#   - group: genai # Variable group containing GIT_TOKEN secret
-#   - name: tag
-#     value: "$(Build.BuildId)" # Keep your existing tag variable
-
 jobs:
 - job: 'Test'
   pool:

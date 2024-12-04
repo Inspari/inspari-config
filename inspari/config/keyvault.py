@@ -1,5 +1,7 @@
+import logging
 import os
 import re
+import azure.core.exceptions
 
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
@@ -8,11 +10,11 @@ from azure.keyvault.secrets import SecretClient
 This module holds parsing logic for Azure Key Vault secrets.
 """
 
+logger = logging.getLogger(__name__)
 
 _keyvault_pattern = re.compile(
     r"^@Microsoft.KeyVault\(VaultName=(.*);SecretName=(.*)\)$"
 )
-_appsettings_prefix = "APPSETTING_"
 
 
 def resolve_key_vault_secrets():
@@ -47,4 +49,8 @@ def resolve_key_vault_secret(
         if client_cache is not None:
             client_cache[vault] = client
     secret_name = match.group(2)
-    return str(client.get_secret(secret_name).value)
+    try:
+        return client.get_secret(secret_name).value
+    except azure.core.exceptions.ServiceRequestError:
+        logger.warning(f"Key vault not found during secret resolution: {vault}")
+        return None

@@ -19,5 +19,5 @@ def load_app_settings():
 
 
 def load_app_setting(key: str):
-    if key.startswith("appsettings_prefix"):
+    if key.startswith(_appsettings_prefix):
         os.environ[key.replace(_appsettings_prefix, "")] = os.environ[key]
