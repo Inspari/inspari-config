@@ -8,7 +8,7 @@ class MockSecretClient:
     Mock client that returns secrets from a dictionary.
     """
 
-    def __init__(self, vault_url: str, credential):
+    def __init__(self, vault_url: str, _):
         self.vault = vault_url.replace("https://", "").replace(".vault.azure.net", "")
 
     def get_secret(self, secret_name: str):
@@ -19,7 +19,8 @@ class MockSecretClient:
         if self.vault not in _mock_secrets:
             raise azure.core.exceptions.ServiceRequestError("Vault not found (mock)")
         return azure.keyvault.secrets._models.KeyVaultSecret(
-            None, _mock_secrets[self.vault].get(secret_name, None)
+            None,  # type: ignore
+            _mock_secrets[self.vault].get(secret_name, None),
         )
 
 
