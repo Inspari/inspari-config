@@ -1,7 +1,7 @@
 import dotenv
 
-from inspari.config.appsettings import load_app_settings
-from inspari.config.keyvault import resolve_key_vault_secrets
+from .appsettings import load_app_settings
+from .keyvault import resolve_key_vault_secrets
 
 """
 This module holds utilities related to configuration.
