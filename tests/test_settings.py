@@ -8,7 +8,7 @@ class MockSecretClient:
     Mock client that returns secrets from a dictionary.
     """
 
-    def __init__(self, vault_url: str, _):
+    def __init__(self, vault_url: str, credential=None):  # pylint: disable=unused-argument
         self.vault = vault_url.replace("https://", "").replace(".vault.azure.net", "")
 
     def get_secret(self, secret_name: str):
