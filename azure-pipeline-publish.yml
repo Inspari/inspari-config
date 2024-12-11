@@ -1,0 +1,27 @@
+trigger:
+ tags:
+    include:
+      - 'v*'  # Matches all tags (or specify a pattern like 'v*' for version tags)
+    
+jobs:
+- job: 'Publish'
+  pool:
+    vmImage: 'Ubuntu-24.04'
+  steps:
+  - task: UsePythonVersion@3.13
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+  - script: |
+      pipx install poetry
+      poetry install --no-root
+    displayName: 'Install dependencies'
+  - script: |
+      pip install pytest-azurepipelines
+      poetry run coverage run -m pytest --junitxml=results.xml
+      poetry run coverage xml -o coverage.xml
+    displayName: 'Run Unit Tests with pytest'
+  - script: |
+      poetry build
+      poetry publish -u __token__ -p $(INSPARI_PYPI_TOKEN)
+    displayName: 'Publish to PyPI'

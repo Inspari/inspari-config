@@ -21,3 +21,17 @@ That's it! You can validate that the environment is setup correctly by running t
 ```bash
 poetry run coverage run -m pytest
 ```
+
+### Deployment
+
+Update the version in `pyproject.toml`, and add a new entry in `CHANGELOG.md`. Build the project via Poetry,
+
+```bash
+poetry build
+```
+
+and push it to pypi,
+
+```bash
+poetry publish -u __token__ -p $INSPARI_PYPI_TOKEN
+```

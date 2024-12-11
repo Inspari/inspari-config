@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 11-12-24
+
+### Added
+
+- Added PyPI publishing pipeline
+
 ## [0.1.2] - 05-12-24
 
 ### Changed
