@@ -1,8 +1,11 @@
 trigger:
  tags:
     include:
-      - 'v*'  # Matches all tags (or specify a pattern like 'v*' for version tags)
+      - 'v*'
     
+variables:
+- group: INSPARI
+
 jobs:
 - job: 'Publish'
   pool:
