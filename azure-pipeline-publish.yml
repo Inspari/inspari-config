@@ -25,8 +25,14 @@ jobs:
       poetry run coverage xml -o coverage.xml
     displayName: 'Run Unit Tests with pytest'
   - script: |
+      printenv | sort
+    displayName: "Dump all environment variables on Linux"
+  - script: |
       echo $(Build.Repository.Uri)
-      git clone https://$(System.AccessToken)@dev.azure.com/Inspari-Accelerators/Accelerators/_git/inspari-config repo-mirror
+      echo $(Build.Repository.Name)
+      echo $(Build.SourceBranch)
+      echo $(Build.SourceBranchName)
+      git clone $(Build.Repository.Uri) repo-mirror
       cd repo-mirror
     env:
       System.AccessToken: $(System.AccessToken)
