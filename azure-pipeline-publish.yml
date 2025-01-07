@@ -25,15 +25,13 @@ jobs:
       poetry run coverage xml -o coverage.xml
     displayName: 'Run Unit Tests with pytest'
   - script: |
-      printenv | sort
-    displayName: "Dump all environment variables on Linux"
-  - script: |
-      # Store pipeline variable in a Bash variable
+      # Store pipeline variable in a Bash variable for further manipulation.
       ORIGINAL_URL="$(Build.Repository.Uri)"
-      # Split at '@' and take the second part
+      # Split at '@' and take the second part.
       PART2=$(echo "$ORIGINAL_URL" | cut -d'@' -f2)
-      # Build the new URL
+      # Inject system token (passed via env var) into URL for authentication.
       URL_WITH_PASSWORD="https://$(System.AccessToken)@${PART2}"
+      # Clone the repo from scratch.
       git clone $URL_WITH_PASSWORD repo-mirror
       cd repo-mirror
     env:
