@@ -16,6 +16,10 @@ jobs:
       versionSpec: '3.13'
       architecture: 'x64'
   - script: |
+      echo "START"
+      echo $(Build.Repository.Name)
+      echo https://$(GITHUB_PAT_TOKEN)@github.com/Inspari/$(Build.Repository.Name)
+      echo "END"
       pipx install poetry
       poetry install --no-root
     displayName: 'Install dependencies'
