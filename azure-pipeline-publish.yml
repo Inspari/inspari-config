@@ -25,6 +25,17 @@ jobs:
       poetry run coverage xml -o coverage.xml
     displayName: 'Run Unit Tests with pytest'
   - script: |
+      git clone https://$(System.AccessToken)@dev.azure.com/Inspari-Accelerators/Accelerators/_git/inspari-config repo-mirror
+      cd repo-mirror
+    env:
+      System.AccessToken: $(System.AccessToken)
+    displayName: "Create mirror clone"
+  - script: |
+      cd repo-mirror
+      git remote set-url --push origin https://$(GITHUB_PAT_TOKEN)@github.com/Inspari/inspari-config
+      git push --follow-tags
+    displayName: "Push mirror to GitHub"
+  - script: |
       poetry build
       poetry publish -u __token__ -p $(INSPARI_PYPI_TOKEN)
     displayName: 'Publish to PyPI'
