@@ -33,7 +33,7 @@ jobs:
   - script: |
       cd repo-mirror
       git remote set-url --push origin https://$(GITHUB_PAT_TOKEN)@github.com/Inspari/inspari-config
-      git push origin master --tags
+      git push --follow-tags
     displayName: "Push mirror to GitHub"
   - script: |
       poetry build
