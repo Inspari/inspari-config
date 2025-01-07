@@ -24,7 +24,17 @@ poetry run coverage run -m pytest
 
 ### Deployment
 
-Update the version in `pyproject.toml`, and add a new entry in `CHANGELOG.md`. Build the project via Poetry,
+Update the version in `pyproject.toml`, run `poetry lock`, and add a new entry in `CHANGELOG.md`.
+
+#### Automatic (preferred)
+
+Merge the changes into master (using PRs). Create a new tag with the new version. If the version is `1.1.1`, the tag would be `v1.1.1`. 
+
+The tag creation will trigger automated deployment of the package to PyPi, as well as synchronization of the code with the public GitHub mirror repository.
+
+#### Manual (not recommended)
+
+Build the project via Poetry,
 
 ```bash
 poetry build
