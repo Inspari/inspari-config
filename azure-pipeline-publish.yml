@@ -25,7 +25,7 @@ jobs:
       poetry run coverage xml -o coverage.xml
     displayName: 'Run Unit Tests with pytest'
   - script: |
-      git clone --mirror https://$(System.AccessToken)@dev.azure.com/Inspari-Accelerators/Accelerators/_git/inspari-config repo-mirror
+      git clone https://$(System.AccessToken)@dev.azure.com/Inspari-Accelerators/Accelerators/_git/inspari-config repo-mirror
       cd repo-mirror
     env:
       System.AccessToken: $(System.AccessToken)
