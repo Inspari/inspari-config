@@ -39,7 +39,7 @@ jobs:
     displayName: "Create mirror clone"
   - script: |
       cd repo-mirror
-      git remote set-url --push origin https://$(GITHUB_PAT_TOKEN)@github.com/Inspari/inspari-config
+      git remote set-url --push origin https://$(GITHUB_PAT_TOKEN)@github.com/Inspari/$(Build.Repository.Name)
       git push --follow-tags
     displayName: "Push mirror to GitHub"
   - script: |
