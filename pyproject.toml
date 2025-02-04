@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "inspari_config"
-version = "0.1.4"
+version = "0.1.5"
 description = "Inspari configuration utilities"
 authors = ["emilhe <emil.h.eriksen@gmail.com>"]
 readme = "README.md"
