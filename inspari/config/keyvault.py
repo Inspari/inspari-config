@@ -1,8 +1,8 @@
 import logging
 import os
 import re
-import azure.core.exceptions
 
+import azure.core.exceptions
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 
@@ -17,12 +17,14 @@ _keyvault_pattern = re.compile(
 )
 
 
-def resolve_key_vault_secrets():
+def resolve_key_vault_secrets(
+    credential: DefaultAzureCredential | None = None,
+) -> str | None:
     """
     This function replaces azure key vault references in the form of
     "@Microsoft.KeyVault(VaultName=...,SecretName=...)" with the actual secret value.
     """
-    credential = DefaultAzureCredential()
+    credential = DefaultAzureCredential() if credential is None else credential
     for key in os.environ:
         secret = resolve_key_vault_secret(
             os.environ[key], client_cache={}, credential=credential
