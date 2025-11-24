@@ -1,9 +1,14 @@
 import os
-import azure.keyvault.secrets
+from typing import Any
+
+from azure.keyvault.secrets import SecretClient, KeyVaultSecret
 import azure.core.exceptions
+from pydantic_settings import BaseSettings
+
+from inspari.config.keyvault import resolve_key_vault_secrets, parse_keyvault_references_in_settings
 
 
-class MockSecretClient:
+class MockSecretClient(SecretClient):
     """
     Mock client that returns secrets from a dictionary.
     """
@@ -11,29 +16,26 @@ class MockSecretClient:
     def __init__(self, vault_url: str, credential=None):  # pylint: disable=unused-argument
         self.vault = vault_url.replace("https://", "").replace(".vault.azure.net", "")
 
-    def get_secret(self, secret_name: str):
+    def get_secret(self, name: str, version: str |None = None, **kwargs: Any) -> KeyVaultSecret:
         _mock_secrets = {
             "VaultA": {"SecretA": "foo", "SecretB": "bar"},
             "VaultB": {"SecretA": "very_secret"},
         }
         if self.vault not in _mock_secrets:
             raise azure.core.exceptions.ServiceRequestError("Vault not found (mock)")
-        return azure.keyvault.secrets._models.KeyVaultSecret(
+        return KeyVaultSecret(
             None,  # type: ignore
-            _mock_secrets[self.vault].get(secret_name, None),
+            _mock_secrets[self.vault].get(name, None),
         )
 
 
 def test_resolve_key_vault_secret():
-    azure.keyvault.secrets.SecretClient = MockSecretClient
-    from inspari.config.keyvault import resolve_key_vault_secrets
-
     os.environ["AA"] = "@Microsoft.KeyVault(VaultName=VaultA;SecretName=SecretA)"
     os.environ["AB"] = "@Microsoft.KeyVault(VaultName=VaultA;SecretName=SecretB)"
     os.environ["BA"] = "@Microsoft.KeyVault(VaultName=VaultB;SecretName=SecretA)"
     os.environ["BB"] = "@Microsoft.KeyVault(VaultName=VaultB;SecretName=SecretB)"
     os.environ["CA"] = "@Microsoft.KeyVault(VaultName=VaultC;SecretName=SecretA)"
-    resolve_key_vault_secrets()
+    resolve_key_vault_secrets(client_cache={"VaultA": MockSecretClient("VaultA"), "VaultB": MockSecretClient("VaultB")})
     # Test EXISTING secrets.
     assert os.environ["AA"] == "foo"
     assert os.environ["AB"] == "bar"
@@ -46,6 +48,17 @@ def test_resolve_key_vault_secret():
     assert (
         os.environ["CA"] == "@Microsoft.KeyVault(VaultName=VaultC;SecretName=SecretA)"
     )
+
+
+def test_parse_basemodel_secrets():
+    class TestSettings(BaseSettings):
+        secret_a: str = "@Microsoft.KeyVault(VaultName=VaultA;SecretName=SecretA)"
+        secret_d: str = "do_not_replace"
+
+    test_setting = parse_keyvault_references_in_settings(TestSettings(), client_cache={"VaultA": MockSecretClient("VaultA")})
+
+    assert test_setting.secret_d == "do_not_replace"
+    assert test_setting.secret_a == "foo"
 
 
 def test_load_appsettings():
