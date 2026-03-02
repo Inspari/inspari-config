@@ -8,6 +8,16 @@ is parsed from environment variables. They are typically read from a `.env` file
 A minimal example is bundled, with the configuration defined in `example_config.py`, a few variables in `example.env`, 
 and the typical access pattern (i.e. how settings are access in application code) illustrated in `example_usage.py`.
 
+### Usage with Keyvault
+
+An especially nice features is the ability to refer to secrets in a Keyvault without committing them to git. All you need to do is add a variable to your .env file like
+
+```
+MY_SECRET="@Microsoft.KeyVault(VaultName=<keyvaultname>,SecretName=<my-secret>)"
+```
+where keyvaultname is the name (not fqdn) of a keyvault that you have access to eg. by doing `az login` and my-secret is the relevant name of the secret.
+Remember that keys can not have underscores but dashes are allowed, whereas it's the opposite for the environment variables.
+
 ### Development
 
 Create a new Python environment with all dependencies installed,
