@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.7] - 02-03-2026
+
+### Fixed
+
+- Fix parsing of keyvault references in pydantic (base) settings that crashed on non-string setting fields (e.g. `bool`, `int`)
+
 ## [0.1.5] - 07-01-25
 
 ### Added
